@@ -164,6 +164,16 @@ func TestRouterAPI(t *testing.T) {
 	}
 }
 
+func TestRouterNamespace(t *testing.T){
+	var API_PATH = "/api"
+	var expecedPath = "/api/namespace"
+
+	if Namespace(API_PATH,"/namespace") != expecedPath{
+		t.Error("Namespace failed")
+	}
+}
+
+
 func TestRouterRoot(t *testing.T) {
 	router := New()
 	recv := catchPanic(func() {

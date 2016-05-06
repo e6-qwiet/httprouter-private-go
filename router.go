@@ -210,6 +210,12 @@ func (r *Router) DELETE(path string, handle Handle) {
 	r.Handle("DELETE", path, handle)
 }
 
+
+// Namespace is a helper function to group the routes
+func Namespace(name, path string) string{
+	return name + path
+}
+
 // Handle registers a new request handle with the given path and method.
 //
 // For GET, POST, PUT, PATCH and DELETE requests the respective shortcut
