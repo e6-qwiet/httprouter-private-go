@@ -80,10 +80,26 @@ import (
 	"net/http"
 )
 
+
 // Handle is a function that can be registered to a route to handle HTTP
 // requests. Like http.HandlerFunc, but has a third parameter for the values of
 // wildcards (variables).
 type Handle func(http.ResponseWriter, *http.Request, Params)
+
+// Namespace is a struct that can hold muliple routes and sub namespace
+type Namespace struct {
+	Name string
+	Routes []Route
+	ChildNamespace []Namespace
+}
+
+// Route is a struct that can hold route information such as HttpMethod, Path, and Handle func
+// Example : &Route{Path: "/",HttpMethod: "POST", Handle: func(http.ResponseWriter, *http.Request, Params)}
+type Route struct {
+	Path    string
+	HttpMethod  string
+	Func 	Handle
+}
 
 // Param is a single URL parameter, consisting of a key and a value.
 type Param struct {
@@ -175,6 +191,16 @@ func New() *Router {
 	}
 }
 
+func NewNamesapce(path string) *Namespace{
+	return &Namespace{
+		Path: path,
+	}
+}
+
+func (n *Namespace) RouteTo(httpMethod, path string, handle Handle){
+	n.Routes = append(n.Routes, &Route{Path: path,HttpMethod: httpMethod,Handle: handle})
+}
+
 // GET is a shortcut for router.Handle("GET", path, handle)
 func (r *Router) GET(path string, handle Handle) {
 	r.Handle("GET", path, handle)
@@ -210,9 +236,8 @@ func (r *Router) DELETE(path string, handle Handle) {
 	r.Handle("DELETE", path, handle)
 }
 
-
 // Namespace is a helper function to group the routes
-func Namespace(name, path string) string{
+func Namespace(name, path string) string {
 	return name + path
 }
 
