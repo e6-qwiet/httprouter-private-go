@@ -3,7 +3,6 @@ package namespace
 import(
 	"github.com/kyawmyintthein/httprouter"
 )
-
 // Namespace is a struct that can hold muliple routes and sub namespace
 type Namespace struct {
 	Name string
@@ -41,7 +40,7 @@ func (root *Namespace) Handle(r *httprouter.Router){
 		root.handleRoutesFromNamespace(root.Name, r)
 		if root.hasChildNamespaces(){
 			for _, namespace := range root.ChildNamespaces{
-				namespace.handleRoutesFromNamespace(root.Name + namespace.Name, r)
+				namespace.handleRoutesFromNamespace(namespace.Name, r)
 				if namespace.hasChildNamespaces(){
 					handleChildNamespaces(namespace.ChildNamespaces, r)
 				}
