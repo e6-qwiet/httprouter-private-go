@@ -191,7 +191,7 @@ func New() *Router {
 	}
 }
 
-func NewNamesapce(name string) *Namespace{
+func NewNamespace(name string) *Namespace{
 	return &Namespace{
 		Name: name,
 	}
