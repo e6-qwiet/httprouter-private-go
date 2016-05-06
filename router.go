@@ -89,7 +89,7 @@ type Handle func(http.ResponseWriter, *http.Request, Params)
 // Namespace is a struct that can hold muliple routes and sub namespace
 type Namespace struct {
 	Name string
-	Routes []Route
+	Routes []*Route
 	ChildNamespace []Namespace
 }
 
@@ -191,14 +191,14 @@ func New() *Router {
 	}
 }
 
-func NewNamesapce(path string) *Namespace{
+func NewNamesapce(name string) *Namespace{
 	return &Namespace{
-		Path: path,
+		Name: name,
 	}
 }
 
 func (n *Namespace) RouteTo(httpMethod, path string, handle Handle){
-	n.Routes = append(n.Routes, &Route{Path: path,HttpMethod: httpMethod,Handle: handle})
+	n.Routes = append(n.Routes, &Route{Path: path,HttpMethod: httpMethod,Func: handle})
 }
 
 // GET is a shortcut for router.Handle("GET", path, handle)
@@ -234,11 +234,6 @@ func (r *Router) PATCH(path string, handle Handle) {
 // DELETE is a shortcut for router.Handle("DELETE", path, handle)
 func (r *Router) DELETE(path string, handle Handle) {
 	r.Handle("DELETE", path, handle)
-}
-
-// Namespace is a helper function to group the routes
-func Namespace(name, path string) string {
-	return name + path
 }
 
 // Handle registers a new request handle with the given path and method.
