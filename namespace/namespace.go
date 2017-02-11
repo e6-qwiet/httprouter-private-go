@@ -1,7 +1,7 @@
 package namespace
 
 import(
-	"github.com/kyawmyintthein/httprouter"
+	"github.com/instabug/httprouter"
 )
 // Namespace is a struct that can hold muliple routes and sub namespace
 type Namespace struct {
@@ -65,7 +65,7 @@ func handleChildNamespaces(childs []*Namespace,r *httprouter.Router){
 			handleChildNamespaces(child.ChildNamespaces, r)
 		}
 	}
-	
+
 }
 
 // put routes to handler

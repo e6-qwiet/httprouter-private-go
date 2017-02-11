@@ -65,8 +65,8 @@ package main
 
 import (
     "fmt"
-    "github.com/kyawmyintthein/httprouter"
-    "github.com/kyawmyintthein/httprouter/namespace"
+    "github.com/instabug/httprouter"
+    "github.com/instabug/httprouter/namespace"
     "net/http"
     "log"
 )
