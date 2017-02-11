@@ -77,7 +77,6 @@
 package httprouter
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -85,15 +84,6 @@ import (
 // requests. Like http.HandlerFunc, but has a third parameter for the values of
 // wildcards (variables).
 type Handle func(http.ResponseWriter, *http.Request, Params)
-
-// Namespace is a struct that can hold muliple routes and sub namespace
-// Route is a struct that can hold route information such as HttpMethod, Path, and Handle func
-// Example : &Route{Path: "/",HttpMethod: "POST", Handle: func(http.ResponseWriter, *http.Request, Params)}
-type Route struct {
-	Path       string
-	HttpMethod string
-	Func       Handle
-}
 
 // Param is a single URL parameter, consisting of a key and a value.
 type Param struct {
@@ -182,12 +172,6 @@ func New() *Router {
 		RedirectFixedPath:      true,
 		HandleMethodNotAllowed: true,
 		HandleOPTIONS:          true,
-	}
-}
-
-func (r *Router) Suggest() {
-	for _, route := range r.trees {
-		fmt.Println(fmt.Sprintf("%v", route))
 	}
 }
 

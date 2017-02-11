@@ -66,7 +66,6 @@ package main
 import (
     "fmt"
     "github.com/instabug/httprouter"
-    "github.com/instabug/httprouter/namespace"
     "net/http"
     "log"
 )
@@ -82,12 +81,14 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func main() {
     router := httprouter.New()
 
-    root := namespace.New("/api")
+    root := httprouter.NewNameSpace("/api")
     root.RouteTo("GET", "/", Index)
 
-    v1 := root.Use("/v1")
+    v1 := root.Use("/v1") // api/v1
     v1.RouteTo("GET","/hello/:name", Hello)
 
+    users := v1.Use("/users") // api/v1/users
+    users.RouteTo("GET","/:id/posts", UserPostsHandler)
     root.Handle(router)
 
     log.Fatal(http.ListenAndServe(":8080", router))

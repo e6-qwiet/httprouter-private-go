@@ -16,6 +16,16 @@ type NamespaceRoute struct {
 	Func       Handle
 }
 
+// Namespace is a struct that can hold muliple routes and sub namespace
+// Route is a struct that can hold route information such as HttpMethod, Path, and Handle func
+// Example : &Route{Path: "/",HttpMethod: "POST", Handle: func(http.ResponseWriter, *http.Request, Params)}
+type Route struct {
+	Path       string
+	HttpMethod string
+	Func       Handle
+}
+
+
 // New is a func to create a namespace as root
 // It can have multiple sub-namespace
 // No namespace on top of root
