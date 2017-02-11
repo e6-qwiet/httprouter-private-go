@@ -59,6 +59,41 @@ func main() {
 }
 ```
 
+Using namespace feature,
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/kyawmyintthein/httprouter"
+    "github.com/kyawmyintthein/httprouter/namespace"
+    "net/http"
+    "log"
+)
+
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+    fmt.Fprint(w, "Welcome!\n")
+}
+
+func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+}
+
+func main() {
+    router := httprouter.New()
+
+    root := namespace.New("/api")
+    root.RouteTo("GET", "/", Index)
+
+    v1 := root.Use("/v1")
+    v1.RouteTo("GET","/hello/:name", Hello)
+
+    root.Handle(router)
+
+    log.Fatal(http.ListenAndServe(":8080", router))
+}
+```
+
 ### Named parameters
 
 As you can see, `:name` is a *named parameter*. The values are accessible via `httprouter.Params`, which is just a slice of `httprouter.Param`s. You can get the value of a parameter either by its index in the slice, or by using the `ByName(name)` method: `:name` can be retrived by `ByName("name")`.
