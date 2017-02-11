@@ -77,10 +77,9 @@
 package httprouter
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 )
-
 
 // Handle is a function that can be registered to a route to handle HTTP
 // requests. Like http.HandlerFunc, but has a third parameter for the values of
@@ -88,19 +87,12 @@ import (
 type Handle func(http.ResponseWriter, *http.Request, Params)
 
 // Namespace is a struct that can hold muliple routes and sub namespace
-type Namespace struct {
-	Name string
-	Routes []*Route
-	ChildNamespaces []*Namespace
-	IsRoot  bool
-}
-
 // Route is a struct that can hold route information such as HttpMethod, Path, and Handle func
 // Example : &Route{Path: "/",HttpMethod: "POST", Handle: func(http.ResponseWriter, *http.Request, Params)}
 type Route struct {
-	Path    string
-	HttpMethod  string
-	Func 	Handle
+	Path       string
+	HttpMethod string
+	Func       Handle
 }
 
 // Param is a single URL parameter, consisting of a key and a value.
@@ -193,98 +185,9 @@ func New() *Router {
 	}
 }
 
-// RootNamespace is a func to create a namespace as root
-// RootNamespace can have multiple sub-namespace
-// No namespace on top of root
-func RootNamespace(name string) *Namespace{
-	return &Namespace{
-		Name: name,
-		IsRoot: true,
-	}
-}
-
-// NewNamespace is a func to create namespace 
-// This will have one parent namespace.
-func NewNamespace(name string) *Namespace{
-	return &Namespace{
-		Name: name,
-		IsRoot: false,
-	}
-}
-
-// RouteTo is to keep the route information in namespace
-func (n *Namespace) RouteTo(httpMethod, path string, handle Handle){
-	n.Routes = append(n.Routes, &Route{Path: path,HttpMethod: httpMethod,Func: handle})
-}
-
-func (r *Router) HandleNamespace(root *Namespace){
-	if root.IsRoot == true{
-		root.handleRoutesFromNamespace(root.Name, r)
-		if root.hasChildNamespaces(){
-			for _, namespace := range root.ChildNamespaces{
-				namespace.handleRoutesFromNamespace(root.Name + namespace.Name, r)
-				if namespace.hasChildNamespaces(){
-					handleChildNamespaces(namespace.ChildNamespaces, r)
-				}
-			}
-		}
-	}else{
-		panic("Namespace is not root. Use RootNamespace function to create as root.")
-	}
-}
-
-func (n *Namespace) hasChildNamespaces() bool{
-	return len(n.ChildNamespaces) > 0
-}
-
-func handleChildNamespaces(childs []*Namespace,r *Router){
-	for _, child := range childs{
-		child.handleRoutesFromNamespace(child.Name, r)
-		if child.hasChildNamespaces(){
-			handleChildNamespaces(child.ChildNamespaces, r)
-		}
-	}
-	
-}
-
-// put routes to handler
-func (n *Namespace) handleRoutesFromNamespace(prefix string, r *Router){
-	for _, route := range n.Routes{
-		switch route.HttpMethod{
-			case "GET":
-				r.GET(prefix + route.Path,route.Func)
-			case "POST":
-				r.POST(prefix + route.Path,route.Func)
-			case "OPTIONS":
-				r.OPTIONS(prefix + route.Path,route.Func)
-			case "HEAD":
-				r.HEAD(prefix + route.Path,route.Func)
-			case "PUT":
-				r.PUT(prefix + route.Path,route.Func)
-			case "PATCH":
-				r.PATCH(prefix + route.Path,route.Func)
-			case "DELETE":
-				r.DELETE(prefix + route.Path,route.Func)
-			default:
-				panic("Invalid http method in routes")
-		}
-	}
-}
-
-func (r *Router) Suggest(){
-	for _, route := range r.trees{
-		fmt.Println(fmt.Sprintf("%v",route))
-	}
-}
-
-// Use is to add sub-namespace for a namesapce
-func (n *Namespace) Use(subNamespace *Namespace){
-	if subNamespace.IsRoot == false{
-		newPath := n.Name + subNamespace.Name
-		subNamespace.Name = newPath
-		n.ChildNamespaces = append(n.ChildNamespaces, subNamespace)
-	}else{
-		panic("Cannot use root namespace as child")
+func (r *Router) Suggest() {
+	for _, route := range r.trees {
+		fmt.Println(fmt.Sprintf("%v", route))
 	}
 }
 
