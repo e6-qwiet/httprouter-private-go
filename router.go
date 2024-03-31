@@ -357,6 +357,20 @@ func (r *Router) HandlerFunc(method, path string, handler http.HandlerFunc) {
 	r.Handler(method, path, handler)
 }
 
+// WrapF is an adapter function that converts a http.HandlerFunc into a Handle.
+func WrapF(f http.HandlerFunc) Handle {
+	return func(w http.ResponseWriter, r *http.Request, _ Params) {
+		f(w, r)
+	}
+}
+
+// WrapF is an adapter function that converts a http.Handler into a Handle.
+func WrapH(h http.Handler) Handle {
+	return func(w http.ResponseWriter, r *http.Request, _ Params) {
+		h.ServeHTTP(w, r)
+	}
+}
+
 // ServeFiles serves files from the given file system root.
 // The path must end with "/*filepath", files are then served from the local
 // path /defined/root/dir/*filepath.
